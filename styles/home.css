@@ -70,3 +70,7 @@ main .btn-create {
     border: none;
     border-radius: 15px;
 }
+footer {
+    height: 15vh;
+    background: linear-gradient(180deg, #F4F7F6, #b42515);
+}

@@ -10,24 +10,25 @@
     <title>home</title>
 </head>
 <body>
+    <div class="overlay"></div>
     <header>
         <img class="image-logo" src="/images/main-logo.png" alt="">
-        <button class="menu"><i class="fa-solid fa-bars"></i></button>
+        <button class="btn-menu"><i class="fa-solid fa-bars"></i></button>
     </header>
-    <aside>
+    <aside class="side-bar">
+        <button class="btn-exit"><i class="fa-solid fa-x"></i></button>
         <div class="conteiner-profile">
             <img class="foto-perfil" src="/images/foto-perfil.png" alt="">
             <input class="profile-name" type="text" value="" placeholder="Insira seu nickname">
         </div>
         <nav>
             <ul class="menu">
-                <a href=""><i class="fa-solid fa-house"></i> &nbsp; home</a>
-                <a href=""><i class="fa-solid fa-paste"></i> &nbsp; histórico</a>
-                <a href=""><i class="fa-solid fa-gear"></i> &nbsp; configurações</a>
-                <a href=""><i class="fa-solid fa-handshake"></i> &nbsp; sobre nós</a>
+                <li><a href=""><i class="fa-solid fa-house"></i> &nbsp; home</a></li>
+                <li><a href=""><i class="fa-solid fa-paste"></i> &nbsp; histórico</a></li>
+                <li><a href=""><i class="fa-solid fa-gear"></i> &nbsp; configurações</a></li>
+                <li><a href=""><i class="fa-solid fa-handshake"></i> &nbsp; sobre nós</a></li>
             </ul>
         </nav>
-        <p></p>
     </aside>
     <main>
         <img class="homem-com-notebook" src="/images/homem-com-notebook.png" alt="">
@@ -38,8 +39,27 @@
         </div>
     </main>
     <footer>
+        <div class="conteiner-info">
+            <h3>NQ Projects</h3>
+            <ul class="list-solutions">
+                <li><h4>Soluções</h4></li>
+                <li><p>Suporte</p></li>
+                <li><p>Agências</p></li>
+                <li><p>contact</p></li>
+            </ul>
+        </div>
+        <div class="conteiner-plataforms">
+            <p>Copyright ©2025 todos os direitos reservados</p>
+            <ul class="list-plataforms">
+                <li><i class="fa-brands fa-square-instagram"></i></li>
+                <li><i class="fa-brands fa-linkedin"></i></li>
+                <li><i class="fa-brands fa-square-youtube"></i></li>
+            </ul>
+        </div>
 
     </footer>
     <script src="https://kit.fontawesome.com/83358cbe78.js" crossorigin="anonymous"></script>
+    <script src="/scripts/main.js"></script>
+    <script src="/scripts/side-bar.js"></script>
 </body>
 </html>

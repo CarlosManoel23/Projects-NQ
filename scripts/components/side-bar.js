@@ -1,4 +1,4 @@
-function inicializarSideBar() {
+export function inicializarSideBar() {
     const sideBar = document.querySelector('.side-bar');
     const btnExit = document.querySelector('.btn-exit');
     const overlay = document.querySelector('.overlay');

@@ -13,7 +13,37 @@
 <body>
     <header class="header-placeholder"></header>
     <aside class="side-bar-placeholder"></aside>
-    <main></main>
+    <main>
+        <div class="conteiner-form">
+            <div class="conteiner-title">
+                <h1 class="first-title">Criar projeto</h1>
+                <p class="first-p">preenchar as informações abaixo e aperte em <span>criar</span></p>
+            </div>
+            <form action="" class="form-project">
+                <div class="input-group">
+                    <label for="name-project">Nome do projeto</label>
+                    <input id="name-project" class="inputs-digits" type="text">
+                </div>
+                <div class="input-group">
+                    <label for="budget-project">Orçamento</label>
+                    <input id="budget-project" class="inputs-digits" type="text">
+                </div>
+                <div class="input-group">
+                    <label for="category-project">Categoria</label>
+                    <div class="select-wrapper">
+                        <select id="category-project">
+                            <option value="" disabled selected></option>
+                            <option value="infra">Infra</option>
+                            <option value="design">Design</option>
+                            <option value="desenvolvimento">Desenvolvimento</option>
+                            <option value="planejamento">planejamento</option>
+                        </select>
+                    </div>
+                </div>
+                <input class="btn-submit" type="submit" value="Criar">
+            </form>
+        </div>
+    </main>
     <footer class="footer-placeholder"></footer>
     <script src="https://kit.fontawesome.com/83358cbe78.js" crossorigin="anonymous"></script>
 </body>

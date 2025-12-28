@@ -3,7 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
-h1, h2, h3, h4, a, p, span, label, input {
+h1, h2, h3, h4, a, p, span, label, input, div {
     font-family: "Roboto", sans-serif;;
 }
 main {
@@ -14,7 +14,7 @@ main {
     align-items: center;
     background-color: #F4F7F6;
 }
-main .conteiner-form {
+.conteiner-form {
     height: 80%;
     width: 30%;
     display: flex;
@@ -23,7 +23,7 @@ main .conteiner-form {
     border-radius: 15px;
     
 }
-main .conteiner-form .conteiner-title {
+.conteiner-title {
     height: 15%;
     width: 100%;
     display: flex;
@@ -31,16 +31,16 @@ main .conteiner-form .conteiner-title {
     align-items: center;
     justify-content: space-between;
 }
-main .conteiner-form .conteiner-title .first-title {
+.first-title {
     color: #b42515;
 }
-main .conteiner-form .conteiner-title .first-p {
+.first-p {
     color: #2C3E50;
 }
-main .conteiner-form .conteiner-title .first-p span {
+.first-p span {
     font-weight: bolder;
 }
-main .conteiner-form .form-project {
+.form-project {
     height: 85%;
     width: 100%;
     display: flex;
@@ -52,16 +52,16 @@ main .conteiner-form .form-project {
     box-shadow: 5px 5px 10px #888888;
     border-radius: 15px;
 }
-main .conteiner-form .form-project .input-group {
+.input-group {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
-main .conteiner-form .form-project .input-group label {
+.input-group label {
     color: #2C3E50;
 }
-main .conteiner-form .form-project .input-group .inputs-digits {
+.inputs-digits {
     width: 100%;
     padding: 14px;
     border: 2px solid transparent;
@@ -71,50 +71,67 @@ main .conteiner-form .form-project .input-group .inputs-digits {
     font-size: 1rem;
     transition: all 0.3s ease;
 }
-main .conteiner-form .form-project .input-group .inputs-digits:focus {
+.inputs-digits:focus {
     background-color: #fff; /* Fica branco quando escreve */
     border-color: #b42515;  /* Sua cor principal */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     outline: none;
 }
-main .conteiner-form .form-project .input-group .select-wrapper {
+.conteiner-select {
     position: relative;
     width: 100%;
 }
-main .conteiner-form .form-project .input-group .select-wrapper #category-project {
-    width: 100%;
-    padding: 14px;
-    padding-right: 40px;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    background-color: #ededed;
-    color: #333;
-    font-size: 16px;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    transition: all 0.3s ease;
-    outline: none;
-}
-main .conteiner-form .form-project .input-group .select-wrapper #category-project:focus {
-    background-color: #fff;
-    border-color: #b42515; 
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-main .conteiner-form .form-project .input-group .select-wrapper #category-project::after {
-    content: '\25BC';
-    font-size: 10px;
-    color: #b42515; 
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-}
-main .conteiner-form .form-project .input-group .select-wrapper #category-project option {
+.conteiner-select label {
     color: #2C3E50;
 }
-main .conteiner-form .form-project .btn-submit {
+.trigger {
+    width: 100%;
+    padding: 14px;
+    display: flex;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background-color: #ededed; /* Cinza claro para contrastar com o branco */
+    color: #333;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+.trigger span {
+    color: rgba(44, 62, 80, 0.6);
+}
+.conteiner-options {
+    display: none;
+    position: absolute;
+    top: 100%; /* Aparece logo abaixo do trigger */
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 10px;
+    z-index: 8;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.option {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: #2C3E50;
+}
+.option:hover {
+    background-color: #b42515;
+    color: white;
+}
+.conteiner-select.active .conteiner-options {
+    display: block;
+
+}
+.conteiner-select:hover .trigger {
+    background-color: #fff; /* Fica branco quando escreve */
+    border-color: #b42515;  /* Sua cor principal */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    outline: none;
+}
+.btn-submit {
     width: 30%;
     border: none;
     padding: 1rem 2rem;
@@ -128,12 +145,12 @@ main .conteiner-form .form-project .btn-submit {
     transition: background-color 0.3s ease, transform 0.2s ease;
     
 }
-main .conteiner-form .form-project .btn-submit:hover {
+.btn-submit:hover {
     background-color: #F4F7F6;
     border: 2px #b42515 solid;
     color: #b42515;
     transform: scale(1.05);
 }
-main .conteiner-form .form-project .btn-submit:active {
+.btn-submit:active {
     transform: scale(0.95);
 }

@@ -1,6 +1,7 @@
 import { carrgarLoader } from '/scripts/utilities/loader.js'
 import { incluirComponente } from '/scripts/utilities/integrate.js'
 import { inicializarSideBar } from '/scripts/components/side-bar.js'
+import { injetarToast, showToast } from './utilities/toast.js'
 
 carrgarLoader()
 incluirComponente('.header-placeholder', '/Routes/components/header.html')
@@ -10,6 +11,7 @@ incluirComponente('.side-bar-placeholder','/Routes/components/side-bar.html')
         // chama a função da sidebar
         inicializarSideBar()
   });
+injetarToast()  
 
 // Parte visual do input name
 const nameProject = document.querySelector('#name-project')
@@ -68,10 +70,59 @@ window.addEventListener('click', (evt) => {
       }
 });
 
-// validações
-const isBlank = (variable) => {
-      valor = variable.value
-      if (valor.length == 0) {
+// Validações
+// O input está vazio?
+const isBlank = (element) => {
+      const valor = element.value
+      if (valor.trim().length == 0) {
             return true
       }
+      return false
+}
+
+// O name tem menos de 3 caracteres?
+const isValideName = () => {
+      const valor = nameProject.value.trim()
+      if (valor.length < 3) {
+        return false
+      }
+    return true
+}
+
+// O o budget é maior que zero?
+const isValidBudget = () => {
+    const numeros = budget.value.replace(/\D/g, "")
+    const valorNumerico = parseFloat(numeros);
+
+    if (isNaN(valorNumerico) || valorNumerico <= 0) {
+        return false
+    }
+    return true
+}
+
+// Selecionou alguma opção
+const isCategorySelected = () => {
+    if (triggerSpan.innerText === "Selecione uma opção") {
+        return false
+    }
+    return true
+}
+
+// Botão de envio
+const btnSubmit = document.querySelector('.btn-submit')
+
+if (btnSubmit) {
+      btnSubmit.addEventListener('click', (evt) => {
+            evt.preventDefault()
+
+            const nameOk = !isBlank(nameProject) && isValideName()
+            const budgetOk = !isBlank(budget) && isValidBudget()
+            const categoryOk = isCategorySelected()
+
+            if (nameOk && budgetOk && categoryOk) {
+                  showToast("Projeto criado com sucesso!", "sucesso");
+            } else {
+                  showToast("Ops! Verifique os campos.", "erro");
+            }   
+      })
 }

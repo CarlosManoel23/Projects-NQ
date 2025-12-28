@@ -13,6 +13,7 @@ main {
     justify-content: center;
     align-items: center;
     background-color: #F4F7F6;
+    position: relative;
 }
 .conteiner-form {
     height: 80%;
@@ -153,4 +154,12 @@ main {
 }
 .btn-submit:active {
     transform: scale(0.95);
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #ededed inset !important; 
+    -webkit-text-fill-color: #2C3E50 !important;
+    transition: background-color 5000s ease-in-out 0s;
 }

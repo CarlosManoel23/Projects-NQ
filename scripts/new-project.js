@@ -43,38 +43,52 @@ budget.addEventListener('change', (evt) => {
 });
 
 // Parte visual do select
-const selectContainer = document.querySelector('.conteiner-select');
-const trigger = document.getElementById('trigger');
-const triggerSpan = trigger.querySelector('span');
-const options = document.querySelectorAll('.option');
+const selectContainer = document.querySelector('.conteiner-select')
+const trigger = document.getElementById('trigger')
+const triggerSpan = trigger.querySelector('span')
+const options = document.querySelectorAll('.option')
 
 // Abre e fecha o menu ao clicar
 trigger.addEventListener('click', (evt) => {
       evt.stopPropagation(); 
-      selectContainer.classList.toggle('active');
+      selectContainer.classList.toggle('active')
 });
 
 // Lógica para selecionar uma opção
 options.forEach(option => {
       option.addEventListener('click', () => {
-          triggerSpan.innerText = option.innerText;
+          triggerSpan.innerText = option.innerText
           triggerSpan.style.color = '#2C3E50'
-          selectContainer.classList.remove('active');
+          selectContainer.classList.remove('active')
       });
 });
 
 // Fecha o menu se clicar em qualquer lugar fora
 window.addEventListener('click', (evt) => {
       if (selectContainer.classList.contains('active')) {
-          selectContainer.classList.remove('active');
+          selectContainer.classList.remove('active')
       }
 });
 
 // Validações
+
+// Mensagem de errro para os inputs
+const pointOutErro = (msg, input) => {
+       const valorInput = msg
+       input.value = valorInput
+       input.classList.add('erro')
+
+       input.addEventListener('click', (evt) => {
+            input.classList.remove('erro')
+            input.value = ''
+       })
+}
+
 // O input está vazio?
 const isBlank = (element) => {
       const valor = element.value
       if (valor.trim().length == 0) {
+            pointOutErro('Preencha esse espaço, por favor!', element)
             return true
       }
       return false
@@ -84,33 +98,38 @@ const isBlank = (element) => {
 const isValideName = () => {
       const valor = nameProject.value.trim()
       if (valor.length < 3) {
-        return false
+            pointOutErro('O nome precisa de 3 ou mais caracteres!', nameProject)
+            return false
       }
-    return true
+      return true
 }
 
 // O o budget é maior que zero?
 const isValidBudget = () => {
-    const numeros = budget.value.replace(/\D/g, "")
-    const valorNumerico = parseFloat(numeros);
+      const numeros = budget.value.replace(/\D/g, "")
+      const valorNumerico = parseFloat(numeros);
 
-    if (isNaN(valorNumerico) || valorNumerico <= 0) {
-        return false
-    }
-    return true
+      if (isNaN(valorNumerico) || valorNumerico <= 0) {
+            pointOutErro('O valor não pode ser nulo ou negativo!', budget)
+            return false
+      }
+      return true
 }
 
 // Selecionou alguma opção
 const isCategorySelected = () => {
-    if (triggerSpan.innerText === "Selecione uma opção") {
-        return false
-    }
-    return true
+      if (triggerSpan.innerText === "Selecione uma opção") {
+            pointOutErro('Você esqueceu de selecionar uma opção', trigger)
+            triggerSpan.style.color = '#e74c3c'    
+            return false
+      }
+      return true
 }
 
 // Botão de envio
 const btnSubmit = document.querySelector('.btn-submit')
 
+// Valida e envia as informações dos inputs
 if (btnSubmit) {
       btnSubmit.addEventListener('click', (evt) => {
             evt.preventDefault()

@@ -1,5 +1,6 @@
 let toast, btnExit, msgText, icon;
 
+// Injeta o componente toast
 export const injetarToast = () => {
     const estiloToast = `
         <style id="Toast-style">
@@ -94,12 +95,12 @@ export const injetarToast = () => {
         btnExit.addEventListener('click', closeToast)
     }        
 }
-
+// Mostra o toast na tela do usuário
 export const showToast = (mensagem, tipo) => {
-    if (!msgText) msgText = document.querySelector('.msg');
-    if (!toast) toast = document.querySelector('.conteiner-toast');
+    if (!msgText) msgText = document.querySelector('.msg')
+    if (!toast) toast = document.querySelector('.conteiner-toast')
 
-    msgText.innerText = mensagem;
+    msgText.innerText = mensagem
     toast.classList.remove('hide')
     toast.classList.add('show')
 
@@ -117,12 +118,12 @@ export const showToast = (mensagem, tipo) => {
         closeToast()
     }, 4000)
 }
-
+// Fecha o toast na tela do usuário
 export const closeToast = () => {
     if (toast.classList.contains('show')) {
-        toast.classList.add('hide');
+        toast.classList.add('hide')
         setTimeout(() => {
-            toast.classList.remove('show');
+            toast.classList.remove('show')
         }, 500);
     }
 }

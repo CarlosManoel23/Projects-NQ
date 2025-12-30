@@ -72,6 +72,11 @@ main {
     font-size: 1rem;
     transition: all 0.3s ease;
 }
+.inputs-digits.erro {
+    background-color: #f9e1de;
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
 .inputs-digits:focus {
     background-color: #fff; /* Fica branco quando escreve */
     border-color: #b42515;  /* Sua cor principal */
@@ -96,7 +101,7 @@ main {
     font-size: 1rem;
     transition: all 0.3s ease;
 }
-.trigger span {
+#trigger span {
     color: rgba(44, 62, 80, 0.6);
 }
 .conteiner-options {
@@ -126,7 +131,7 @@ main {
     display: block;
 
 }
-.conteiner-select:hover .trigger {
+.conteiner-select:hover #trigger {
     background-color: #fff; /* Fica branco quando escreve */
     border-color: #b42515;  /* Sua cor principal */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);

@@ -2,6 +2,7 @@ import { carrgarLoader } from '/scripts/utilities/loader.js'
 import { incluirComponente } from '/scripts/utilities/integrate.js'
 import { inicializarSideBar } from '/scripts/components/side-bar.js'
 import { injetarToast, showToast } from './utilities/toast.js'
+import { LogicInputs } from '/scripts/utilities/inputs.js'
 
 carrgarLoader()
 incluirComponente('.header-placeholder', '/Routes/components/header.html')
@@ -13,118 +14,8 @@ incluirComponente('.side-bar-placeholder','/Routes/components/side-bar.html')
   });
 injetarToast()  
 
-// Parte visual do input name
-const nameProject = document.querySelector('#name-project')
-
-// apagar espaços inúteis
-nameProject.addEventListener('change', (evt) => {
-      const valor = evt.target.value.trim()
-      evt.target.value = valor
-})
-
-// Parte visual do input budget
-const budget = document.querySelector('#budget-project')
-
-// Adicionar o cifrão caso não exista
-budget.addEventListener('input', (evt) => {
-
-      const valor = evt.target.value.replace(/\D/g, "");
-
-      if (!valor.startsWith('R$ ')) {
-            const apenasNumeros = valor.replace('R$', '').trim();
-            evt.target.value = 'R$ ' + apenasNumeros;
-      }
-})
-// apagar o cifrão se não digitar nada
-budget.addEventListener('change', (evt) => {
-      if (evt.target.value === "R$ ") {
-            evt.target.value = '' 
-      }
-});
-
-// Parte visual do select
-const selectContainer = document.querySelector('.conteiner-select')
-const trigger = document.getElementById('trigger')
-const triggerSpan = trigger.querySelector('span')
-const options = document.querySelectorAll('.option')
-
-// Abre e fecha o menu ao clicar
-trigger.addEventListener('click', (evt) => {
-      evt.stopPropagation(); 
-      selectContainer.classList.toggle('active')
-});
-
-// Lógica para selecionar uma opção
-options.forEach(option => {
-      option.addEventListener('click', () => {
-          triggerSpan.innerText = option.innerText
-          triggerSpan.style.color = '#2C3E50'
-          selectContainer.classList.remove('active')
-      });
-});
-
-// Fecha o menu se clicar em qualquer lugar fora
-window.addEventListener('click', (evt) => {
-      if (selectContainer.classList.contains('active')) {
-          selectContainer.classList.remove('active')
-      }
-});
-
-// Validações
-
-// Mensagem de errro para os inputs
-const pointOutErro = (msg, input) => {
-       const valorInput = msg
-       input.value = valorInput
-       input.classList.add('erro')
-
-       input.addEventListener('click', (evt) => {
-            input.classList.remove('erro')
-            input.value = ''
-       })
-}
-
-// O input está vazio?
-const isBlank = (element) => {
-      const valor = element.value
-      if (valor.trim().length == 0) {
-            pointOutErro('Preencha esse espaço, por favor!', element)
-            return true
-      }
-      return false
-}
-
-// O name tem menos de 3 caracteres?
-const isValideName = () => {
-      const valor = nameProject.value.trim()
-      if (valor.length < 3) {
-            pointOutErro('O nome precisa de 3 ou mais caracteres!', nameProject)
-            return false
-      }
-      return true
-}
-
-// O o budget é maior que zero?
-const isValidBudget = () => {
-      const numeros = budget.value.replace(/\D/g, "")
-      const valorNumerico = parseFloat(numeros);
-
-      if (isNaN(valorNumerico) || valorNumerico <= 0) {
-            pointOutErro('O valor não pode ser nulo ou negativo!', budget)
-            return false
-      }
-      return true
-}
-
-// Selecionou alguma opção
-const isCategorySelected = () => {
-      if (triggerSpan.innerText === "Selecione uma opção") {
-            pointOutErro('Você esqueceu de selecionar uma opção', trigger)
-            triggerSpan.style.color = '#e74c3c'    
-            return false
-      }
-      return true
-}
+// instancia da classe
+const logicInputs = new LogicInputs('#name-project', '#budget-project', '.conteiner-select')
 
 // Botão de envio
 const btnSubmit = document.querySelector('.btn-submit')
@@ -134,14 +25,135 @@ if (btnSubmit) {
       btnSubmit.addEventListener('click', (evt) => {
             evt.preventDefault()
 
-            const nameOk = !isBlank(nameProject) && isValideName()
-            const budgetOk = !isBlank(budget) && isValidBudget()
-            const categoryOk = isCategorySelected()
+            const nameOk = !logicInputs.isBlank('name') && logicInputs.isValideName()
+            const budgetOk = !logicInputs.isBlank('budget') && logicInputs.isValidBudget()
+            const categoryOk = logicInputs.isCategorySelected()
 
             if (nameOk && budgetOk && categoryOk) {
                   showToast("Projeto criado com sucesso!", "sucesso");
+                  const name = document.querySelector('#name-project')
+                  const budget = document.querySelector('#budget-project')
+                  const category = document.querySelector('#triggerSpan')
+                  //BD.push(new CriarProjeto(name, budget, category))
+                  setTimeout(() => {
+                        location.href = "/Routes/pages/history-projects.html" 
+                  }, 1000);
             } else {
                   showToast("Ops! Verifique os campos.", "erro");
             }   
       })
 }
+
+// Criação de projetos
+class CriarProjeto {
+      constructor(name, budget, category) {
+            this.name = name.value
+            this.budget = budget.value
+            this.category = category.textContent
+            this.id = `item-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+            this.dom = this.criarElemento()
+      }
+      criarElemento() {
+            const card = document.createElement('div')
+            card.id = this.id
+            card.classList.add('card-project')
+            card.innerHTML = `
+                  <div class="card">      
+                        <div class="header-card">
+                              <h3>${this.name}</h3>
+                              <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                        </div>      
+                        <div class="content-card">
+                              <p>Orçamento: R$ ${this.budget.toFixed(2)}</p>
+                              <p>Categoria: ${this.category}</p>
+                              <button class="btn-dowload"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                  </div>           
+            `
+            const btnEdit = card.querySelector('.btn-edit')
+            btnEdit.addEventListener('click', (evt)=>{
+                  this.editarProjeto()
+            })
+            
+            return card
+      }
+      editarProjeto() {
+            const overlay = document.createElement('div')
+            overlay.classList.add('modal-overlay')
+            overlay.innerHTML = `
+                  <div class="modal-content">
+                        <div class="top-edit">
+                              <h2>Editar Projeto -> ${this.name}</h2>
+                              <button class="btn-erase"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <div class="Info-project">
+                              <h3>Informações</h3>
+                              <div class="input-group">
+                                    <label for="edit-name">Nome</label>
+                                    <input type="text" class="inputs-digits" id="edit-name" value="${this.name}">
+                              </div>
+                              <div class="input-group">
+                                    <label for="edit-budget">Orçamento</label>
+                                    <input type="text" class="inputs-digits" id="edit-budget" value="${this.budget}">
+                              </div>
+                              <div class="conteiner-select">
+                                    <div class="input-group">
+                                          <label for="trigger">Categoria</label>
+                                          <div class="inputs-digits" id="trigger">
+                                                <span>Selecione uma opção</span>
+                                          </div>
+                                    </div>
+                                    <div class="conteiner-options">
+                                          <div class="option">Infra</div>
+                                          <div class="option">Design</div>
+                                          <div class="option">Desenvolvimento</div>
+                                          <div class="option">Planejamento</div>
+                                    </div>
+                              </div>
+                        </div>
+                        <div class="info-services">
+                              <div class="top-services">
+                                    <h3>Serviços</h3>
+                                    <button class="btn-services"><i class="fa-solid fa-plus"></i></button>
+                              </div>
+                                    <p>Nenhum serviço adicionado</p>
+                        </div>
+                        <div class="conteiner-buttons">
+                              <button class="buttons" id="btn-cancel">Cancelar</button>
+                              <button class="buttons" id="btn-save">Salvar</button>
+                        </div>
+                  </div>
+                  `
+            document.body.appendChild(overlay)
+
+            overlay.querySelector('#save').addEventListener('click', () => {
+                  // 1. Atualiza os dados no Objeto (Lógica)
+                  this.name = overlay.querySelector('#edit-name').value;
+                  this.budget = parseFloat(overlay.querySelector('#edit-budget').value);
+
+                  // 2. Atualiza o que o usuário vê (Interface)
+                  this.atualizarInterface();
+                  
+                  overlay.remove();
+            });
+
+            overlay.querySelector('#cancel').addEventListener('click', () => overlay.remove());
+      }
+
+      atualizarInterface() {
+            // Buscamos os elementos dentro do próprio this.dom do objeto
+            const h3 = this.dom.querySelector('.display-name');
+            const spanBudget = this.dom.querySelector('.display-budget');
+
+            h3.textContent = this.name;
+            spanBudget.textContent = this.budget.toFixed(2);
+      }
+}
+
+      
+
+
+
+
+
+

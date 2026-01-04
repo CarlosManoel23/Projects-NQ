@@ -3,6 +3,8 @@ import { incluirComponente } from '/scripts/utilities/integrate.js'
 import { inicializarSideBar } from '/scripts/components/side-bar.js'
 import { injetarToast, showToast } from './utilities/toast.js'
 import { LogicInputs } from '/scripts/utilities/inputs.js'
+import { lerProjetos, limparTodosProjetos } from '/scripts/crud/crud.js'
+import { CriarProjeto } from './utilities/criar-projeto.js'
 
 carrgarLoader()
 incluirComponente('.header-placeholder', '/Routes/components/header.html')
@@ -14,6 +16,12 @@ incluirComponente('.side-bar-placeholder','/Routes/components/side-bar.html')
   });
 injetarToast()
 
-const logicInputs = new LogicInputs('#edit-name', '#edit-budget', '.conteiner-select')
-
-
+const adicionarCard = () => {
+  const conteinerCards = document.querySelector('.conteiner-cards')
+  let listProjects = lerProjetos() // Pega os dados brutos (JSON)
+  listProjects.forEach(item => {
+    const projeto = new CriarProjeto(item.name, item.budget, item.category, item.id)
+    conteinerCards.appendChild(projeto.dom)
+  })
+}
+adicionarCard()

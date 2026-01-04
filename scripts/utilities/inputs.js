@@ -1,3 +1,4 @@
+
 export class LogicInputs {
     constructor(nameCSS, budgetCSS, selectCSS) {
         this.nameProject = document.querySelector(nameCSS)

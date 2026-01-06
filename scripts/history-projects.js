@@ -1,7 +1,7 @@
 import { carrgarLoader } from '/scripts/utilities/loader.js'
 import { incluirComponente } from '/scripts/utilities/integrate.js'
 import { inicializarSideBar } from '/scripts/components/side-bar.js'
-import { injetarToast, showToast } from './utilities/toast.js'
+import { injetarToast } from './utilities/toast.js'
 import { LogicInputs } from '/scripts/utilities/inputs.js'
 import { lerProjetos, limparTodosProjetos } from '/scripts/crud/crud.js'
 import { CriarProjeto } from './utilities/criar-projeto.js'
@@ -25,3 +25,4 @@ const adicionarCard = () => {
   })
 }
 adicionarCard()
+

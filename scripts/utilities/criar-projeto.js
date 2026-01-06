@@ -1,4 +1,6 @@
-import { LogicInputs } from "/scripts/utilities/inputs.js";
+import { LogicInputs } from "/scripts/utilities/inputs.js"
+import { excluirProjeto, atualizarProjeto } from "/scripts/crud/crud.js"
+import { showToast } from '/scripts/utilities/toast.js'
 
 export class CriarProjeto {
     constructor(name, budget, category, id = null, services = null) {
@@ -10,6 +12,7 @@ export class CriarProjeto {
         this.dom = this.criarElemento()
     }
     criarElemento() {
+        // Criando o card no dom
         const card = document.createElement('div')
         card.id = this.id
         card.classList.add('card-project')
@@ -20,8 +23,8 @@ export class CriarProjeto {
                     <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></button>
                 </div>      
                 <div class="content-card">
-                    <p>Orçamento: ${this.budget}</p>
-                    <p>Categoria: ${this.category}</p>
+                    <p class="bud">Orçamento: ${this.budget}</p>
+                    <p class="categ">Categoria: ${this.category}</p>
                     <button class="btn-dowload"><i class="fa-solid fa-download"></i></button>
                 </div>
             </div>           
@@ -34,6 +37,7 @@ export class CriarProjeto {
         return card
     }
     editarProjeto() {
+        // Criando layout de edição
         const overlay = document.createElement('div')
         overlay.classList.add('modal-overlay')
         overlay.innerHTML = `
@@ -56,7 +60,7 @@ export class CriarProjeto {
                         <div class="input-group">
                             <label for="trigger">Categoria</label>
                             <div class="inputs-digits" id="trigger">
-                                <span>${this.category}</span>
+                                <span class="triggerSpan">${this.category}</span>
                             </div>
                         </div>
                             <div class="conteiner-options">
@@ -83,15 +87,43 @@ export class CriarProjeto {
         document.body.appendChild(overlay)
         const validacaoModal = new LogicInputs('#edit-name', '#edit-budget', '.conteiner-select');
 
+        // Salvar alterações
         overlay.querySelector('#btn-save').addEventListener('click', () => {
-            // 1. Atualiza os dados no Objeto (Lógica)
-            this.name = overlay.querySelector('#edit-name').value;
-            this.budget = parseFloat(overlay.querySelector('#edit-budget').value);
+            // validações
+            const nameOk = !validacaoModal.isBlank('name') && validacaoModal.isValideName()
+            const budgetOk = !validacaoModal.isBlank('budget') && validacaoModal.isValidBudget()
+            const categoryOk = validacaoModal.isCategorySelected()
 
-                  
-            overlay.remove();
-        });
+            // Salvando as alterações
+            if (nameOk && budgetOk && categoryOk) {
+                this.name = overlay.querySelector('#edit-name').value
+                this.budget = overlay.querySelector('#edit-budget').value
+                this.category = overlay.querySelector('.triggerSpan').textContent
+                
+                atualizarProjeto(this.id, {name: this.name, budget: this.budget, category: this.category})
+                
+                // Atualizando o dom
+                this.dom.querySelector('h3').textContent = this.name
+                this.dom.querySelector('.bud').textContent = `Orçamento: ${this.budget}`
+                this.dom.querySelector('.categ').textContent = `Categoria: ${this.category}`
 
+                showToast("Projeto editado com sucesso!", "sucesso");
+            } else {
+                  showToast("Ops! Verifique os campos.", "erro");
+            }         
+            overlay.remove()
+        })
+        // Apagar projeto
+        overlay.querySelector('.btn-erase').addEventListener('click', () => {
+            if (confirm("Tem certeza que deseja excluir este projeto?")) {
+                excluirProjeto(this.id)
+                this.dom.remove()
+                overlay.remove()
+            }    
+        })
+        // Cancelar edição    
         overlay.querySelector('#btn-cancel').addEventListener('click', () => overlay.remove());
     }
+        
+    
 }

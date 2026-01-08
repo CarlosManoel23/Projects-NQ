@@ -1,5 +1,5 @@
 import { LogicInputs } from "/scripts/utilities/inputs.js"
-import { excluirProjeto, atualizarProjeto } from "/scripts/crud/crud.js"
+import { excluirProjeto, atualizarProjeto } from "/scripts/storage/crud.js"
 import { showToast } from '/scripts/utilities/toast.js'
 
 export class CriarProjeto {
@@ -100,13 +100,8 @@ export class CriarProjeto {
                 this.budget = overlay.querySelector('#edit-budget').value
                 this.category = overlay.querySelector('.triggerSpan').textContent
                 
-                atualizarProjeto(this.id, {name: this.name, budget: this.budget, category: this.category})
+                this.salvarEdição()
                 
-                // Atualizando o dom
-                this.dom.querySelector('h3').textContent = this.name
-                this.dom.querySelector('.bud').textContent = `Orçamento: ${this.budget}`
-                this.dom.querySelector('.categ').textContent = `Categoria: ${this.category}`
-
                 showToast("Projeto editado com sucesso!", "sucesso");
             } else {
                   showToast("Ops! Verifique os campos.", "erro");
@@ -124,6 +119,14 @@ export class CriarProjeto {
         // Cancelar edição    
         overlay.querySelector('#btn-cancel').addEventListener('click', () => overlay.remove());
     }
-        
+    salvarEdição() {
+        // salvar no BD
+        atualizarProjeto(this.id, {name: this.name, budget: this.budget, category: this.category})
+                
+        // Atualizando o dom
+        this.dom.querySelector('h3').textContent = this.name
+        this.dom.querySelector('.bud').textContent = `Orçamento: ${this.budget}`
+        this.dom.querySelector('.categ').textContent = `Categoria: ${this.category}`
+    }    
     
 }

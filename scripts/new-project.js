@@ -3,8 +3,7 @@ import { incluirComponente } from '/scripts/utilities/integrate.js'
 import { inicializarSideBar } from '/scripts/components/side-bar.js'
 import { injetarToast, showToast } from './utilities/toast.js'
 import { LogicInputs } from '/scripts/utilities/inputs.js'
-import { CriarProjeto } from './utilities/criar-projeto.js'
-import { salvarProjeto } from '/scripts/crud/crud.js'
+import { salvarProjeto } from '/scripts/storage/crud.js'
 
 carrgarLoader()
 incluirComponente('.header-placeholder', '/Routes/components/header.html')

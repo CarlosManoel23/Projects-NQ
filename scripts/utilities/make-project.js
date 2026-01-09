@@ -1,6 +1,7 @@
 import { LogicInputs } from "/scripts/utilities/inputs.js"
 import { excluirProjeto, atualizarProjeto } from "/scripts/storage/crud.js"
 import { showToast } from '/scripts/utilities/toast.js'
+import { confirmarAcao } from "/scripts/utilities/modal-comfirm.js";
 
 export class CriarProjeto {
     constructor(name, budget, category, id = null, services = null) {
@@ -109,8 +110,11 @@ export class CriarProjeto {
             overlay.remove()
         })
         // Apagar projeto
-        overlay.querySelector('.btn-erase').addEventListener('click', () => {
-            if (confirm("Tem certeza que deseja excluir este projeto?")) {
+        overlay.querySelector('.btn-erase').addEventListener('click', async () => {
+
+            const confirmado = await confirmarAcao("Realmente deseja excluir este projeto?")
+
+            if (confirmado) {
                 excluirProjeto(this.id)
                 this.dom.remove()
                 overlay.remove()

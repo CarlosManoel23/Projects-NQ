@@ -93,7 +93,7 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 30;
+    z-index: 15;
 }
 .modal-content {
     width: 50%;

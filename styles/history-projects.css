@@ -301,3 +301,96 @@ main {
 #btn-save:active, #btn-cancel:active {
     transform: scale(0.95);
 }
+.painel-service {
+    width: 18rem;
+    height: 17rem;
+    display: none;
+    flex-direction: column;
+    padding: 2rem 1rem 1rem 20px;
+    justify-content: space-between;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 23;
+    position: absolute;
+    top: 57.7%;
+    right: 6%;
+}
+.painel-service.show {
+    display: flex;
+    animation: slideIn 0.5s ease forwards;
+}
+.painel-service.hide {
+    display: flex;
+    animation: slideOut 0.5s ease forwards;
+}
+@keyframes slidein {
+    from {
+        right: 10%;
+        opacity: 0;
+    }
+    to {
+        right: 6%; 
+        opacity: 1;
+    }
+}
+@keyframes slideOut {
+    from {
+        right: 6%; 
+        opacity: 1;
+    }
+    to {
+        right: 10%;
+        opacity: 0;
+    }
+}    
+.painel-service h3 {
+    color: #2C3E50;
+}
+.inputs-services {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background-color: #ededed; 
+    color: #333;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+.inputs-services:focus {
+    background-color: #fff; 
+    border-color: #b42515; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    outline: none;
+}
+.inputs-services.erro {
+    background-color: #f9e1de;
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+.buttons-conteiner-service {
+    width: 100%;
+    border-top: 2px solid rgba(180, 37, 21, 0.5);
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+.buttons-service {
+    width: 6rem;
+    padding: 0.5rem 1rem;
+    font-weight: bolder;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+#btn-cancel-service {
+    background-color: white;
+    color: #b42515;
+    border: 2px solid #b42515 ;
+}
+#btn-create-service {
+    background-color: #b42515;
+    color: white;
+}    

@@ -1,55 +1,75 @@
 
 export class LogicInputs {
-    constructor(nameCSS, budgetCSS, selectCSS) {
-        this.nameProject = document.querySelector(nameCSS)
-        this.budget = document.querySelector(budgetCSS)
-        this.selectContainer = document.querySelector(selectCSS)
-        this.trigger = this.selectContainer.querySelector('#trigger')
-        this.triggerSpan = this.trigger.querySelector('span')
-        this.options = this.selectContainer.querySelectorAll('.option')
+    constructor(nameCSS=null, budgetCSS=null, selectCSS=null) {
 
-        this.initEvents()
+        this.nameProject = nameCSS ? document.querySelector(nameCSS) : null;
+        this.budget = budgetCSS ? document.querySelector(budgetCSS) : null;
+        this.selectContainer = selectCSS ? document.querySelector(selectCSS) : null;
+
+        // Só tenta buscar os elementos internos do select se o container existir
+        if (this.selectContainer) {
+            this.trigger = this.selectContainer.querySelector('#trigger');
+            this.triggerSpan = this.trigger?.querySelector('span');
+            this.options = this.selectContainer.querySelectorAll('.option');
+        }
+
+        this.initEvents();
     }
     initEvents() {
-        this.nameProject.addEventListener('change', (evt) => {
-            const valor = evt.target.value.trim()
-            evt.target.value = valor
-        })
-        this.budget.addEventListener('input', (evt) => {
-
-            const valor = evt.target.value.replace(/\D/g, "");
-
-            if (!valor.startsWith('R$ ')) {
-                const apenasNumeros = valor.replace('R$', '').trim();
-                evt.target.value = 'R$ ' + apenasNumeros;
+        if (this.nameProject) {
+            this.nameProject.addEventListener('change', (evt) => {
+                const valor = evt.target.value.trim()
+                evt.target.value = valor
+            })
         }
-        })
+         
+        if (this.budget) { 
+            this.budget.addEventListener('input', (evt) => {
+
+                const valor = evt.target.value.replace(/\D/g, "");
+
+                if (!valor.startsWith('R$ ')) {
+                    const apenasNumeros = valor.replace('R$', '').trim();
+                    evt.target.value = 'R$ ' + apenasNumeros;
+                }
+            })
+        }
+
         // apagar o cifrão se não digitar nada
-        this.budget.addEventListener('change', (evt) => {
-            if (evt.target.value === "R$ ") {
-                    evt.target.value = '' 
-            }
-        });
-        this.trigger.addEventListener('click', (evt) => {
-            evt.stopPropagation(); 
-            this.selectContainer.classList.toggle('active')
-        });
+        if (this.budget) {
+            this.budget.addEventListener('change', (evt) => {
+                if (evt.target.value === "R$ ") {
+                        evt.target.value = '' 
+                }
+            });
+        }
+
+        if (this.selectContainer) {
+            this.trigger.addEventListener('click', (evt) => {
+                evt.stopPropagation(); 
+                this.selectContainer.classList.toggle('active')
+            });
+        }
 
         // Lógica para selecionar uma opção
-        this.options.forEach(option => {
-            option.addEventListener('click', () => {
-                this.triggerSpan.innerText = option.innerText
-                this.triggerSpan.style.color = '#2C3E50'
-                this.selectContainer.classList.remove('active')
+        if (this.selectContainer) {
+            this.options.forEach(option => {
+                option.addEventListener('click', () => {
+                    this.triggerSpan.innerText = option.innerText
+                    this.triggerSpan.style.color = '#2C3E50'
+                    this.selectContainer.classList.remove('active')
+                });
             });
-        });
+        }
 
         // Fecha o menu se clicar em qualquer lugar fora
-        window.addEventListener('click', (evt) => {
-            if (this.selectContainer.classList.contains('active')) {
-                this.selectContainer.classList.remove('active')
-            }
-        });
+        if (this.selectContainer) {
+            window.addEventListener('click', (evt) => {
+                if (this.selectContainer.classList.contains('active')) {
+                    this.selectContainer.classList.remove('active')
+                }
+            });
+        }
     }
     // O input está vazio
     isBlank(tip) {

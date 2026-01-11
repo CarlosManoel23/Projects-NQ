@@ -79,10 +79,19 @@ export class CriarProjeto {
                     </div>
                     <p>Nenhum serviço adicionado</p>
                 </div>
-                    <div class="conteiner-buttons">
-                        <button class="buttons" id="btn-cancel">Cancelar</button>
-                        <button class="buttons" id="btn-save">Salvar</button>
+                <div class="conteiner-buttons">
+                    <button class="buttons" id="btn-cancel">Cancelar</button>
+                    <button class="buttons" id="btn-save">Salvar</button>
+                </div>
+                <div class="painel-service">
+                    <h3>Criar Serviço</h3>
+                    <input class="inputs-services" id="name-service" type="text" placeholder="Nome do Serviço">
+                    <input class="inputs-services" id="coast-service" type="text" placeholder="Custo do Serviço">
+                    <div class="buttons-conteiner-service">
+                        <button class="buttons-service" id="btn-cancel-service">Cancelar</button>
+                        <button class="buttons-service" id="btn-create-service">Criar</button>
                     </div>
+                </div>    
             </div>
              `
         document.body.appendChild(overlay)
@@ -119,6 +128,38 @@ export class CriarProjeto {
                 this.dom.remove()
                 overlay.remove()
             }    
+        })
+        // logica dos services
+        overlay.querySelector('.btn-services').addEventListener('click', () => {
+
+            const validacaoService = new LogicInputs('#name-service', '#coast-service')
+            const painelService = overlay.querySelector(".painel-service")
+            const nameService = painelService.querySelector('#name-service')
+            const coastService = painelService.querySelector('#coast-service')
+            
+            // Abrir painel de serviços
+            painelService.classList.remove('hide')
+            painelService.classList.add('show')
+
+            // Cancelar a criação de serviço
+            const btnServiceCancel = painelService.querySelector('#btn-cancel-service')
+            btnServiceCancel.addEventListener('click', () => {
+                painelService.classList.remove('show')
+                painelService.classList.add('hide')
+                nameService.innerHTML = ''
+                coastService.innerHTML = ''
+            })
+            // criação do serviço
+            const btnServiceCriar = painelService.querySelector('#btn-create-service')
+            btnServiceCriar.addEventListener('click', () => {
+                const nameOk = !validacaoService.isBlank('name') && validacaoService.isValideName()
+                const coastOk = !validacaoService.isBlank('budget') && validacaoService.isValidBudget()
+
+                if (nameOk && coastOk) {
+                    console.log('criou')
+                    // const cardService = new Services(nameService.value, coastService.value)
+                }    
+            })   
         })
         // Cancelar edição    
         overlay.querySelector('#btn-cancel').addEventListener('click', () => overlay.remove());

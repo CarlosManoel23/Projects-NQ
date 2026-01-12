@@ -2,6 +2,7 @@ import { LogicInputs } from "/scripts/utilities/inputs.js"
 import { excluirProjeto, atualizarProjeto } from "/scripts/storage/crud.js"
 import { showToast } from '/scripts/utilities/toast.js'
 import { confirmarAcao } from "/scripts/utilities/modal-comfirm.js";
+import { Services } from "/scripts/utilities/services.js";
 
 export class CriarProjeto {
     constructor(name, budget, category, id = null, services = null) {
@@ -77,7 +78,9 @@ export class CriarProjeto {
                         <h3>Serviços</h3>
                         <button class="btn-services"><i class="fa-solid fa-plus"></i></button>
                     </div>
-                    <p>Nenhum serviço adicionado</p>
+                    <div class="conteiner-services">
+                        <p class="status-service">Nenhum serviço adicionado</p>
+                    </div>
                 </div>
                 <div class="conteiner-buttons">
                     <button class="buttons" id="btn-cancel">Cancelar</button>
@@ -95,6 +98,28 @@ export class CriarProjeto {
             </div>
              `
         document.body.appendChild(overlay)
+
+        const conteinerServices = overlay.querySelector('.conteiner-services');
+
+        if (this.services.length > 0) {
+            // Esconde a mensagem "Nenhum serviço"
+            overlay.querySelector('.status-service').style.display = 'none';
+            this.services.forEach(servico => {
+            // Passe o id do projeto para a classe Services
+            const serviceVisual = new Services(servico.name, servico.coast, servico.id, this.id);
+        
+            // ADICIONE ESTE EVENTO DE ESCUTA:
+            serviceVisual.dom.querySelector('.btn-erase-service').addEventListener('click', () => {
+                // Filtra o array da memória para remover o serviço que acabou de ser apagado
+                this.services = this.services.filter(s => s.id !== servico.id);
+             
+                // Opcional: Chama o salvarEdição para garantir sincronia imediata
+                this.salvarEdição();
+            });
+
+            conteinerServices.appendChild(serviceVisual.dom);
+        });
+        }
         const validacaoModal = new LogicInputs('#edit-name', '#edit-budget', '.conteiner-select');
 
         // Salvar alterações
@@ -156,8 +181,23 @@ export class CriarProjeto {
                 const coastOk = !validacaoService.isBlank('budget') && validacaoService.isValidBudget()
 
                 if (nameOk && coastOk) {
-                    console.log('criou')
-                    // const cardService = new Services(nameService.value, coastService.value)
+                    const dadosServico = {
+                        name: nameService.value,
+                        coast: coastService.value,
+                        id: `service-${Date.now()}`,
+                        idProjeto: this.id
+                    };
+                    // Adicione os dados ao array da classe
+                    this.services.push(dadosServico);
+                    this.salvarEdição();
+
+                    const cardService = new Services(dadosServico.name, dadosServico.coast);
+                    const conteinerServices = overlay.querySelector('.conteiner-services');
+                        
+                    const statusService = conteinerServices.querySelector('.status-service');
+                    if (statusService) statusService.style.display = 'none';
+                        
+                    conteinerServices.appendChild(cardService.dom);                    
                 }    
             })   
         })
@@ -166,7 +206,7 @@ export class CriarProjeto {
     }
     salvarEdição() {
         // salvar no BD
-        atualizarProjeto(this.id, {name: this.name, budget: this.budget, category: this.category})
+        atualizarProjeto(this.id, {name: this.name, budget: this.budget, category: this.category, services: this.services})
                 
         // Atualizando o dom
         this.dom.querySelector('h3').textContent = this.name

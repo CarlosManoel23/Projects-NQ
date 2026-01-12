@@ -35,6 +35,22 @@ export const excluirProjeto = (id) => {
     const novaLista = projetos.filter(p => p.id !== id)
     localStorage.setItem(DB, JSON.stringify(novaLista))
 }
+export const excluirServico = (idProjeto, idServico) => {
+    const projetos = lerProjetos()
+    const index = projetos.findIndex(p => p.id === idProjeto)
+    if (index !== -1) {
+        // 3. Filtra o array de serviços para remover apenas o ID solicitado
+        const servicosAtualizados = projetos[index].services.filter(s => s.id !== idServico)
+        
+        // 4. Atualiza o projeto com a nova lista de serviços
+        projetos[index].services = servicosAtualizados
+        
+        // 5. Salva a lista inteira de projetos novamente no DB
+        localStorage.setItem(DB, JSON.stringify(projetos))
+        return true
+    }
+    return false
+}
 export const limparTodosProjetos = () => {
     localStorage.removeItem(DB); 
 };

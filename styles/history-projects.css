@@ -264,8 +264,35 @@ main {
 .btn-services:hover {
     transform: scale(1.2);
 }
-.info-services p {
+.conteiner-services {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 20px;
+    padding: 1rem; 
+    max-height: 450px;    
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    position: relative;
+}
+.status-service {
+    position: absolute;
     color: #2C3E50;
+    left: 0;
+    top: 0;
+}
+.conteiner-services::-webkit-scrollbar {
+    width: 8px; 
+}
+.conteiner-services::-webkit-scrollbar-track {
+    background: #F4F7F6; 
+    border-radius: 10px;
+}
+.conteiner-services::-webkit-scrollbar-thumb {
+    background: #b42515; 
+    border-radius: 10px;
+}
+.conteiner-services::-webkit-scrollbar-thumb:hover {
+    background: #2C3E50;
 }
 .conteiner-buttons {
     display: flex;
@@ -301,6 +328,7 @@ main {
 #btn-save:active, #btn-cancel:active {
     transform: scale(0.95);
 }
+/* create-painel-service */
 .painel-service {
     width: 18rem;
     height: 17rem;
@@ -393,4 +421,44 @@ main {
 #btn-create-service {
     background-color: #b42515;
     color: white;
-}    
+}
+
+/* service */
+.card-service {
+    width: 6rem;
+    height: 6rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: #b42515;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 6px 18px rgba(180, 37, 21, 0.6);
+}
+.conteiner-name, .conteiner-coast {
+    height: 50%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.conteiner-coast {
+    border-top: 2px solid white;
+}
+.p-name {
+    font-size: 14px;
+    color: white;
+}
+.p-coast {
+    font-size: 14px;
+    color: white;
+}
+.btn-erase-service {
+    border: none;
+    background-color: #b42515;
+    position: absolute;
+    top: 6px;
+    right: 5px;
+    color: white;
+    font-size: 10px;
+}

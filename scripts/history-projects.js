@@ -14,7 +14,7 @@ const adicionarCard = () => {
   const conteinerCards = document.querySelector('.conteiner-cards')
   let listProjects = lerProjetos() // Pega os dados brutos (JSON)
   listProjects.forEach(item => {
-    const projeto = new CriarProjeto(item.name, item.budget, item.category, item.id)
+    const projeto = new CriarProjeto(item.name, item.budget, item.category, item.id, item.services)
     conteinerCards.appendChild(projeto.dom)
   })
 }

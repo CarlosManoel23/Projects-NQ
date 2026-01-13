@@ -1,12 +1,11 @@
-import { excluirServico } from "/scripts/storage/crud.js"
+import { ComponenteUI } from "/scripts/utilities/componentsUI.js";
 
-
-export class Services {
-    constructor(name, coast, id, idProjeto) {
+export class Services extends ComponenteUI {
+    constructor(name, coast, id, onRenderizar) {
+        super(id || `service-${Date.now()}`)
         this.name = name
         this.coast = coast
-        this.id = id || `service-${Date.now()}`
-        this.idProjeto = idProjeto
+        this.onRenderizar = onRenderizar
         this.dom = this.criarServico()
     }
     criarServico() {
@@ -22,15 +21,15 @@ export class Services {
                 </div>
                 <button class="btn-erase-service"><i class="fa-solid fa-x"></i></button>`
         
-        const btnEraseService = cardService.querySelector('.btn-erase-service')
-        btnEraseService.addEventListener('click', () => {
-            this.apagarServico()    
-        })
+        const btnEraseService = cardService.querySelector('.btn-erase-service');
         
-        return cardService
-    }
-    apagarServico() {
-        excluirServico(this.idProjeto, this.id)
-        this.dom.remove()
+        // 2. Quando clicar, chamamos a função que o Pai enviou
+        btnEraseService.addEventListener('click', () => {
+            if (this.onRenderizar) {
+                this.onRenderizar(this.id); // Passamos o ID de volta para o Pai
+            }
+        });
+        
+        return cardService;
     }
 }

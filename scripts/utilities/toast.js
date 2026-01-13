@@ -19,7 +19,7 @@ export const injetarToast = () => {
                 background: white;
                 border-left: 8px solid #b42515; 
                 box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                z-index: 15;
+                z-index: 30;
             }
             .conteiner-toast.show {
                 display: flex;

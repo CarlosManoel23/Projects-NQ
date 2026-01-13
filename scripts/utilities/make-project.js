@@ -3,13 +3,14 @@ import { excluirProjeto, atualizarProjeto } from "/scripts/storage/crud.js"
 import { showToast } from '/scripts/utilities/toast.js'
 import { confirmarAcao } from "/scripts/utilities/modal-comfirm.js";
 import { Services } from "/scripts/utilities/services.js";
+import { ComponenteUI } from "/scripts/utilities/componentsUI.js";
 
-export class CriarProjeto {
+export class CriarProjeto extends ComponenteUI {
     constructor(name, budget, category, id = null, services = null) {
+        super(id || `item-${Date.now()}-${Math.floor(Math.random() * 1000)}`);
         this.name = name !== undefined ? name : name;
         this.budget = budget !== undefined ? budget : budget;
         this.category = category !== undefined ? category : category;
-        this.id = id || `item-${Date.now()}-${Math.floor(Math.random() * 1000)}`
         this.services = services || []
         this.dom = this.criarElemento()
     }
@@ -38,11 +39,8 @@ export class CriarProjeto {
             
         return card
     }
-    editarProjeto() {
-        // Criando layout de edição
-        const overlay = document.createElement('div')
-        overlay.classList.add('modal-overlay')
-        overlay.innerHTML = `
+    templateModal() {
+        return `
             <div class="modal-content">
                 <div class="top-edit">
                     <h2>Editar Projeto: <span>${this.name}</span></h2>
@@ -65,13 +63,13 @@ export class CriarProjeto {
                                 <span class="triggerSpan">${this.category}</span>
                             </div>
                         </div>
-                            <div class="conteiner-options">
-                                <div class="option">Infra</div>
-                                <div class="option">Design</div>
-                                <div class="option">Desenvolvimento</div>
-                                <div class="option">Planejamento</div>
-                            </div>
+                        <div class="conteiner-options">
+                            <div class="option">Infra</div>
+                            <div class="option">Design</div>
+                            <div class="option">Desenvolvimento</div>
+                            <div class="option">Planejamento</div>
                         </div>
+                    </div>
                 </div>
                 <div class="info-services">
                     <div class="top-services">
@@ -95,65 +93,39 @@ export class CriarProjeto {
                         <button class="buttons-service" id="btn-create-service">Criar</button>
                     </div>
                 </div>    
-            </div>
-             `
-        document.body.appendChild(overlay)
+            </div>`
+    }
+    editarProjeto() {
+        const overlay = document.createElement('div');
+        overlay.classList.add('modal-overlay');
+        overlay.innerHTML = this.templateModal();
+        document.body.appendChild(overlay);
 
-        const conteinerServices = overlay.querySelector('.conteiner-services');
+        let rascunhoServicos = [...this.services];
 
-        if (this.services.length > 0) {
-            // Esconde a mensagem "Nenhum serviço"
-            overlay.querySelector('.status-service').style.display = 'none';
-            this.services.forEach(servico => {
-            // Passe o id do projeto para a classe Services
-            const serviceVisual = new Services(servico.name, servico.coast, servico.id, this.id);
-        
-            // ADICIONE ESTE EVENTO DE ESCUTA:
-            serviceVisual.dom.querySelector('.btn-erase-service').addEventListener('click', () => {
-                // Filtra o array da memória para remover o serviço que acabou de ser apagado
-                this.services = this.services.filter(s => s.id !== servico.id);
-             
-                // Opcional: Chama o salvarEdição para garantir sincronia imediata
-                this.salvarEdição();
-            });
+        const conteinerServices = overlay.querySelector('.conteiner-services')
+        const statusService = overlay.querySelector('.status-service')
 
-            conteinerServices.appendChild(serviceVisual.dom);
-        });
-        }
-        const validacaoModal = new LogicInputs('#edit-name', '#edit-budget', '.conteiner-select');
-
-        // Salvar alterações
-        overlay.querySelector('#btn-save').addEventListener('click', () => {
-            // validações
-            const nameOk = !validacaoModal.isBlank('name') && validacaoModal.isValideName()
-            const budgetOk = !validacaoModal.isBlank('budget') && validacaoModal.isValidBudget()
-            const categoryOk = validacaoModal.isCategorySelected()
-
-            // Salvando as alterações
-            if (nameOk && budgetOk && categoryOk) {
-                this.name = overlay.querySelector('#edit-name').value
-                this.budget = overlay.querySelector('#edit-budget').value
-                this.category = overlay.querySelector('.triggerSpan').textContent
-                
-                this.salvarEdição()
-                
-                showToast("Projeto editado com sucesso!", "sucesso");
+        // Renderiza todos os serviços salvos
+        const renderizarServicos = () => {
+            conteinerServices.querySelectorAll('.card-service').forEach(el => el.remove());
+            
+            if (rascunhoServicos.length === 0) {
+                statusService.style.display = 'flex';
             } else {
-                  showToast("Ops! Verifique os campos.", "erro");
-            }         
-            overlay.remove()
-        })
-        // Apagar projeto
-        overlay.querySelector('.btn-erase').addEventListener('click', async () => {
+                statusService.style.display = 'none';
+                rascunhoServicos.forEach(s => {
+                    // Passamos o callback que remove do rascunho e re-renderiza
+                    const sv = new Services(s.name, s.coast, s.id, (idParaRemover) => {
+                        rascunhoServicos = rascunhoServicos.filter(item => item.id !== idParaRemover);
+                        renderizarServicos(); 
+                    });
+                    conteinerServices.appendChild(sv.dom);
+                });
+            }
+        }
+        renderizarServicos()
 
-            const confirmado = await confirmarAcao("Realmente deseja excluir este projeto?")
-
-            if (confirmado) {
-                excluirProjeto(this.id)
-                this.dom.remove()
-                overlay.remove()
-            }    
-        })
         // logica dos services
         overlay.querySelector('.btn-services').addEventListener('click', () => {
 
@@ -184,34 +156,85 @@ export class CriarProjeto {
                     const dadosServico = {
                         name: nameService.value,
                         coast: coastService.value,
-                        id: `service-${Date.now()}`,
-                        idProjeto: this.id
-                    };
-                    // Adicione os dados ao array da classe
-                    this.services.push(dadosServico);
-                    this.salvarEdição();
+                        id: `service-${Date.now()}`
+                    }
 
-                    const cardService = new Services(dadosServico.name, dadosServico.coast);
-                    const conteinerServices = overlay.querySelector('.conteiner-services');
-                        
-                    const statusService = conteinerServices.querySelector('.status-service');
-                    if (statusService) statusService.style.display = 'none';
-                        
-                    conteinerServices.appendChild(cardService.dom);                    
-                }    
+                    // Adicione os dados ao array da classe
+                    rascunhoServicos.push(dadosServico)
+                    renderizarServicos()
+                }                     
             })   
+        })
+        const validacaoModal = new LogicInputs('#edit-name', '#edit-budget', '.conteiner-select')
+
+        // Salvar alterações
+        overlay.querySelector('#btn-save').addEventListener('click', async () => {
+            if (this.inputValidação(validacaoModal)) {
+
+                this.services = rascunhoServicos
+                
+                this.setPropriedades(overlay)
+                
+                const salvo = await this.salvarEdição()
+                
+                if (salvo) {
+                    showToast("Projeto editado com sucesso!", "sucesso")
+                    overlay.remove()
+                } else {
+                    showToast("Erro ao salvar as alterações.", "erro")
+                }
+            }
+        })
+        // Apagar projeto
+        overlay.querySelector('.btn-erase').addEventListener('click', async () => {
+
+            const confirmado = await confirmarAcao("Realmente deseja excluir este projeto?")
+
+            if (confirmado) {
+                excluirProjeto(this.id)
+                this.dom.remove()
+                overlay.remove()
+            }    
         })
         // Cancelar edição    
         overlay.querySelector('#btn-cancel').addEventListener('click', () => overlay.remove());
     }
-    salvarEdição() {
-        // salvar no BD
-        atualizarProjeto(this.id, {name: this.name, budget: this.budget, category: this.category, services: this.services})
-                
-        // Atualizando o dom
-        this.dom.querySelector('h3').textContent = this.name
-        this.dom.querySelector('.bud').textContent = `Orçamento: ${this.budget}`
-        this.dom.querySelector('.categ').textContent = `Categoria: ${this.category}`
-    }    
-    
+    async salvarEdição() {
+        try {
+            // salvar no BD (atualizarProjeto no crud.js é síncrono, mas o async o envolve)
+            const sucesso = atualizarProjeto(this.id, {
+                name: this.name, 
+                budget: this.budget, 
+                category: this.category, 
+                services: this.services
+            });
+                    
+            if (sucesso) {
+                // Atualizando o dom apenas após confirmar o sucesso no banco
+                this.getElement('h3').textContent = this.name;
+                this.getElement('.bud').textContent = `Orçamento: ${this.budget}`;
+                this.getElement('.categ').textContent = `Categoria: ${this.category}`;
+                return true;
+            }
+            return false
+        } catch (error) {
+            console.error("Erro ao salvar projeto:", error)
+            return false
+        }
+    }
+    // novo valores para as propriedades    
+    setPropriedades(campo) {
+        this.name = campo.querySelector('#edit-name').value
+        this.budget = campo.querySelector('#edit-budget').value
+        this.category = campo.querySelector('.triggerSpan').textContent
+    }
+    // validação do inputs do modal    
+    inputValidação(validacaoModal) {
+        const nameOk = !validacaoModal.isBlank('name') && validacaoModal.isValideName()
+        const budgetOk = !validacaoModal.isBlank('budget') && validacaoModal.isValidBudget()
+        const categoryOk = validacaoModal.isCategorySelected()
+
+        if (nameOk && budgetOk && categoryOk) return true
+        
+    }
 }
